@@ -1,6 +1,6 @@
 // Picado Order Board service worker: keeps the app working offline.
 // Bump VERSION when you upload new app files so phones pick up the update.
-const VERSION = "pob-v1";
+const VERSION = "pob-v2";
 const SHELL = ["./", "./index.html", "./config.js", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png"];
 
 self.addEventListener("install", (e) => {
