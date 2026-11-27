@@ -158,6 +158,34 @@ button{cursor:pointer}
 .tg[aria-pressed=true]{background:var(--green);border-color:var(--green);color:#fff}
 .tg[aria-pressed=true]::before{border-color:#fff;background:#fff;box-shadow:inset 0 0 0 3px var(--green)}
 .tg:disabled{cursor:default;opacity:.7}
+.pfbox{max-width:760px;margin:16px auto 0;padding:14px 16px;border-radius:14px;background:rgba(255,248,236,.08);border:1.5px solid var(--line);display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+@media(max-width:800px){.pfbox{margin:16px max(4vw,16px) 0}}
+.pfi{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1 1 240px}
+.pfi b{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold,#f0c35a)}
+.pfi span{font-size:15px}
+.pfi small{font-size:13px;color:var(--mute)}
+.pfi .bad{color:#ffb4a8}
+.pfb{display:flex;flex-wrap:wrap;gap:8px}
+.pfb a.btn{text-decoration:none}
+.spin{display:inline-block;width:14px;height:14px;border-radius:50%;border:2px solid currentColor;border-right-color:transparent;vertical-align:-2px;margin-right:6px;animation:sp 0.9s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.upbox{flex-direction:column;align-items:stretch}
+.uphead{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.uplist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.uprow{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:12px;background:rgba(32,16,8,.45);border:1px solid var(--line)}
+.upname{flex:1 1 auto;min-width:0;border:0;background:none;color:var(--ink);text-align:left;padding:0;font:inherit;cursor:pointer;display:flex;flex-direction:column;gap:2px}
+.upname b{font-size:15px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-decoration:underline;text-decoration-color:rgba(255,226,196,.35);text-underline-offset:3px}
+.upname small{font-size:13px;color:var(--mute)}
+.upname:disabled{cursor:default}
+.upname:disabled b{text-decoration:none}
+.uprow .btn{min-height:38px;padding:0 14px;font-size:14px;flex:0 0 auto}
+.upbar{height:4px;border-radius:2px;background:rgba(255,226,196,.18);overflow:hidden;margin-top:4px}
+.upbar i{display:block;height:100%;background:var(--gold)}
+.upempty{margin:0;font-size:14px;color:var(--mute)}
+label.btn{cursor:pointer}
+.blist{margin:8px 0 0;padding:0;list-style:none;font-size:14px}
+.blist li{margin:4px 0}
+.blist a{color:var(--red);font-weight:700}
 .oacts{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:18px max(4vw,16px) 0;max-width:1100px;margin:0 auto}
 /* editor: ticket paper */
 .overlay{position:fixed;inset:0;z-index:40;background:rgba(10,5,5,.72);display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:24px 16px}
@@ -218,6 +246,7 @@ body.nodl [data-act=pdf],body.nodl [data-act=tix],body.nodl #allPdf{display:none
 .sh3:first-of-type{border-top:0;padding-top:4px}
 .who2{margin:8px 0 0;font-size:15px}
 .nokey{margin:8px 0 0;font-size:14px}
+.linkbtn{border:0;background:none;color:var(--red);font-weight:700;text-decoration:underline;padding:0;font-size:inherit;min-height:0;cursor:pointer}
 .nokey button{border:0;background:none;color:var(--red);font-weight:700;text-decoration:underline;padding:0;font-size:14px;min-height:0}
 </style>
 </head>
@@ -270,6 +299,9 @@ body.nodl [data-act=pdf],body.nodl [data-act=tix],body.nodl #allPdf{display:none
   </div>
   <div class="onote" id="oNote" hidden><p></p></div>
   <div class="spread" id="spread"></div>
+  <div class="pfbox" id="pfBox" hidden></div>
+  <div class="pfbox upbox" id="upBox" hidden></div>
+  <input type="file" id="upFile" multiple hidden>
   <div class="oacts">
     <button class="btn" type="button" data-act="pdf">Worksheet PDF</button>
     <button class="btn" type="button" data-act="tix">Ticket inserts PDF</button>
@@ -338,6 +370,15 @@ body.nodl [data-act=pdf],body.nodl [data-act=tix],body.nodl #allPdf{display:none
       <label class="fl">API key<input type="password" id="kKey" autocomplete="off" placeholder="sk-ant-…"></label>
       <label class="fl">Model<input type="text" id="kModel" autocomplete="off" spellcheck="false"></label>
       <div class="improw"><button class="btn red" id="kSave" type="button">Save</button><button class="btn" id="kClear" type="button">Remove key</button><span class="hint2" id="kMsg" role="status"></span></div>
+      <h3 class="sh3">3D print files</h3>
+      <p class="hint2">Your private GitHub builder makes the print files for each order. These settings are shared with everyone on the board.</p>
+      <label class="fl">Builder repository<input type="text" id="bRepo" placeholder="your-name/dumpling-builder" autocomplete="off" spellcheck="false" autocapitalize="off"></label>
+      <label class="fl">GitHub token<input type="password" id="bToken" autocomplete="off" placeholder="github_pat_…"></label>
+      <div class="improw"><button class="btn red" id="bSave" type="button">Save and check</button><button class="btn" id="bAll" type="button">Make files for all open orders</button></div>
+      <div class="hint2" id="bMsg" role="status"></div>
+      <h3 class="sh3">Uploaded files</h3>
+      <p class="hint2" id="upUse">No uploaded files yet.</p>
+      <div class="improw"><button class="btn" id="upClear" type="button">Remove files from shipped orders</button></div>
       <h3 class="sh3">Backup</h3>
       <p class="hint2">Export saves every order to a file. Import adds orders from a file, such as orders.json from the setup.</p>
       <div class="improw"><button class="btn" id="expBtn" type="button">Export orders</button><label class="btn" for="impFile">Import orders file</label><input type="file" id="impFile" accept="application/json,.json" hidden><span class="hint2" id="impMsg" role="status"></span></div>
@@ -614,6 +655,7 @@ function renderOpen(animate){
   const sh=$("oShip");sh.setAttribute("aria-pressed",o.shipped?"true":"false");sh.disabled=!canWrite;
   $("oNote").hidden=!o.note;$("oNote").querySelector("p").textContent=o.note||"";
   $("oEdit").hidden=$("oDel").hidden=!canWrite;
+  renderPf(o);renderUp(o);
   const h=its.map((it,k)=>`<div class="slot" style="--k:${k}"><div class="tkw">${ticketSvg(o.no,it,{item:itemStamp(o,it),shipped:!!o.shipped})}</div><div class="tgs"><button class="tg" type="button" data-k="${esc(it.id)}p" aria-pressed="${st[it.id+"p"]?"true":"false"}"${dis}>Printed</button><button class="tg" type="button" data-k="${esc(it.id)}k" aria-pressed="${st[it.id+"k"]?"true":"false"}"${dis}>Packed</button></div><p class="n">Ticket ${k+1} of ${its.length}</p></div>`).join("");
   const sp=$("spread");
   if(openHtml.get(openId)!==h||animate){
@@ -623,7 +665,7 @@ function renderOpen(animate){
   }
 }
 function openOrder(id){
-  openId=id;openHtml.delete(id);$("open").hidden=false;document.body.classList.add("lock");$("open").scrollTop=0;$("spread").scrollLeft=0;
+  openId=id;pfHtml.clear();openHtml.delete(id);$("open").hidden=false;document.body.classList.add("lock");$("open").scrollTop=0;$("spread").scrollLeft=0;
   renderOpen(true);$("oClose").focus();
 }
 function closeOpen(){
@@ -668,6 +710,252 @@ function write(id,data){if(!backend)return;backend.update(id,data).catch(e=>toas
 function setStat(id,k,v){if(!backend)return;backend.setStatus(id,k,v).catch(e=>toast(writeErr(e)))}
 function patchLocal(id,fn){const o=orders.find(x=>x.id===id);if(o){fn(o);render()}}
 
+/* 3D print files: made by the GitHub builder, stored in Firestore (orderFiles) */
+let files={},builder=null,stopFiles=null,stopSet=null;
+const pfBusy=new Map(),pfBlob=new Map(),pfRun=new Map(),pfHtml=new Map();
+const WF="# Picado order board - print-file builder (v1). The order board app installs and updates this file.\nname: Build print files\nrun-name: ${{ github.event.client_payload.label || 'Print files' }}\non:\n  repository_dispatch:\n    types: [build-order]\nconcurrency:\n  group: order-${{ github.event.client_payload.orderId }}\n  cancel-in-progress: true\npermissions:\n  contents: read\njobs:\n  build:\n    runs-on: ubuntu-latest\n    timeout-minutes: 40\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-python@v5\n        with:\n          python-version: '3.13'\n          cache: pip\n          cache-dependency-path: .github/workflows/build.yml\n      - name: Install tools\n        run: pip install numpy==2.5.3 scipy==1.18.1 scikit-image==0.26.0 pillow==12.3.0\n      - name: Unpack the builder\n        run: |\n          test -f builder.zip || { echo \"::error::builder.zip is missing. Upload it to the repository.\"; exit 1; }\n          mkdir -p \"$RUNNER_TEMP/b\" && unzip -q builder.zip -d \"$RUNNER_TEMP/b\"\n          sudo mkdir -p /home/claude && sudo ln -sfn \"$RUNNER_TEMP/b/work\" /home/claude/work\n          gcc -O2 -shared -fPIC -o /home/claude/work/libdecimate.so /home/claude/work/decimate.c\n      - uses: actions/cache@v4\n        with:\n          path: ${{ runner.temp }}/b/work/cache\n          key: pieces-${{ hashFiles('builder.zip') }}-${{ github.run_id }}\n          restore-keys: pieces-${{ hashFiles('builder.zip') }}-\n      - name: Build and upload to the order board\n        run: python3 /home/claude/work/worker.py\n        env:\n          ORDER_ID: ${{ github.event.client_payload.orderId }}\n          FIREBASE_API_KEY: ${{ github.event.client_payload.apiKey }}\n          FIREBASE_PROJECT_ID: ${{ github.event.client_payload.projectId }}\n          BUILDER_EMAIL: ${{ secrets.BUILDER_EMAIL }}\n          BUILDER_PASSWORD: ${{ secrets.BUILDER_PASSWORD }}\n          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\n";
+const itemsKey=o=>itemsOf(o).map(it=>[it.name||"",it.base||"",it.face||"",it.clicker===true?"1":"0"].join("|")).join(";");
+const hasBuilder=()=>!!(builder&&builder.repo&&builder.token);
+const ago=ms=>{const m=Math.round(ms/6e4);return m<1?"just now":m<60?`${m} min ago`:m<1440?`${Math.round(m/60)} h ago`:`${Math.round(m/1440)} d ago`};
+const mb=n=>n>=1e6?(n/1e6).toFixed(1)+" MB":Math.max(1,Math.round(n/1e3))+" KB";
+function gh(b,path,opt={}){
+  const h={"Accept":"application/vnd.github+json","Authorization":"Bearer "+b.token,"X-GitHub-Api-Version":"2022-11-28"};
+  if(opt.body)h["Content-Type"]="application/json";
+  return fetch("https://api.github.com"+path,{...opt,headers:h,cache:"no-store"});
+}
+function ghErr(s){return s===401?"GitHub didn't accept the token. It may have expired. Add a new one in Settings.":(s===403||s===404)?"GitHub said no. Check the builder repository name and the token's access in Settings.":`GitHub error ${s}. Try again.`}
+function fsErr(e){const c=String(e&&e.code||"");return /permission-denied/.test(c)?"Firestore blocked it. Update the Firestore rules with the print-files version.":null}
+async function triggerBuild(o,manual){
+  if(!backend||!backend.setFiles||!itemsOf(o).length)return;
+  if(!hasBuilder()){if(manual)toast("Set up the print-file builder in Settings first.");return}
+  if(!navigator.onLine){toast("You're offline. Tap Make print files when you're back online.");return}
+  const b=builder,id=o.id,ik=itemsKey(o);
+  pfBusy.set(id,"trig");pfRun.delete(id);if(openId===id)renderOpen(false);
+  try{
+    await Promise.race([backend.setFiles(id,{status:"queued",itemsKey:ik,queuedAt:new Date().toISOString(),error:""}),new Promise(r=>setTimeout(r,8000))]);
+    const r=await gh(b,`/repos/${b.repo}/dispatches`,{method:"POST",body:JSON.stringify({event_type:"build-order",client_payload:{orderId:id,label:`Order #${pad(o.no)}`,apiKey:backend.cfg.apiKey,projectId:backend.cfg.projectId}})});
+    if(r.status!==204&&r.status!==200)throw new Error(ghErr(r.status));
+    if(manual)toast(`Making print files for order #${pad(o.no)}. It takes a few minutes.`);
+  }catch(e){
+    const msg=fsErr(e)||(e&&e.message&&/^(GitHub|Firestore)/.test(e.message)?e.message:"Couldn't reach GitHub. Check your connection and try again.");
+    if(!fsErr(e))backend.setFiles(id,{status:"error",error:msg,itemsKey:ik}).catch(()=>{});
+    toast(msg);
+  }finally{pfBusy.delete(id);if(openId===id)renderOpen(false)}
+}
+async function pfDownload(o){
+  const f=files[o.id];if(!f||f.status!=="ready")return;
+  const name=(f.filename||`Order ${pad(o.no)} print files.zip`).replace(/[\\/:*?"<>|]+/g," "),key=o.id+"|"+(f.builtAt||"");
+  const hit=pfBlob.get(key);if(hit){shareOrDownload(hit,name);return}
+  pfBusy.set(o.id,"dl");if(openId===o.id)renderOpen(false);
+  try{
+    const parts=await backend.getChunks(o.id);
+    if(!parts.length)throw new Error(navigator.onLine?"incomplete":"offline");
+    const blob=new Blob(parts,{type:"application/zip"});
+    if((f.chunks&&parts.length!==f.chunks)||(f.size&&blob.size!==f.size))throw new Error("incomplete");
+    pfBlob.clear();pfBlob.set(key,blob);
+    if(matchMedia("(pointer: coarse)").matches)toast("Print files ready.",()=>shareOrDownload(blob,name),"Save or share");
+    else download(blob,name);
+  }catch(e){toast(e.message==="offline"?"You're offline. Connect to download the files.":e.message==="incomplete"?"Those files are incomplete. Tap Rebuild.":"Couldn't download the files. Try again.")}
+  finally{pfBusy.delete(o.id);if(openId===o.id)renderOpen(false)}
+}
+async function pfCheckRun(o){
+  const f=files[o.id],b=builder;
+  if(!f||!hasBuilder()||!navigator.onLine||!/^(queued|building)$/.test(f.status||""))return;
+  const since=Date.parse(f.queuedAt||f.startedAt||"")||0,last=pfRun.get(o.id);
+  if(!since||Date.now()-since<90000||(last&&Date.now()-last.t<60000))return;
+  pfRun.set(o.id,{...(last||{}),t:Date.now()});
+  try{
+    const r=await gh(b,`/repos/${b.repo}/actions/runs?event=repository_dispatch&per_page=20`);if(!r.ok)return;
+    const j=await r.json(),tag=`#${pad(o.no)}`;
+    const run=(j.workflow_runs||[]).filter(x=>String(x.display_title||"").includes(tag)&&Date.parse(x.created_at)>=since-120000).sort((a,c)=>Date.parse(c.created_at)-Date.parse(a.created_at))[0];
+    const fail=run&&run.status==="completed"&&!/^(success|cancelled|skipped)$/.test(run.conclusion||"");
+    pfRun.set(o.id,{t:Date.now(),fail,url:run?run.html_url:"",seen:!!run});
+    if(openId===o.id)renderOpen(false);
+  }catch(e){}
+}
+function pfView(o){
+  const f=files[o.id],busy=pfBusy.get(o.id),run=pfRun.get(o.id)||{},now=Date.now(),actions=b=>`https://github.com/${b.repo}/actions`;
+  const B=(act,label,red)=>`<button class="btn${red?" red":""}" type="button" data-act="${act}">${label}</button>`;
+  const L=(url,label)=>url?`<a class="btn" href="${esc(url)}" target="_blank" rel="noopener">${label}</a>`:"";
+  const ok=canWrite&&hasBuilder();
+  if(busy==="trig")return {t:`<span class="spin"></span>Sending to the builder…`,b:""};
+  if(busy==="dl")return {t:`<span class="spin"></span>Getting the files…`,b:""};
+  if(!f){
+    if(!hasBuilder())return canWrite?{t:"Set up the builder in Settings to make the 3D files for this order.",b:B("pfset","Set up")}:{t:"Not made yet.",b:""};
+    return {t:"Not made yet.",b:ok?B("pfmake","Make print files",true):""};
+  }
+  const fresh=f.itemsKey===itemsKey(o);
+  if(run.fail&&/^(queued|building)$/.test(f.status))return {t:`<span class="bad">The build stopped on GitHub.</span>`,s:"Open the log to see why, then try again.",b:L(run.url,"See log")+(ok?B("pfmake","Try again",true):"")};
+  if(f.status==="queued"){
+    const age=now-(Date.parse(f.queuedAt||"")||now);
+    if(age>12*6e4)return {t:"Still waiting for GitHub to start.",s:"It may be busy, or the builder isn't set up yet.",b:(hasBuilder()?L(run.url||actions(builder),"Open GitHub"):"")+(ok?B("pfmake","Try again"):"")};
+    return {t:`<span class="spin"></span>Waiting for the builder to start…`,s:"Usually under a minute."};
+  }
+  if(f.status==="building"){
+    const age=now-(Date.parse(f.startedAt||"")||now);
+    if(age>35*6e4)return {t:"This is taking too long.",b:L(f.runUrl,"See log")+(ok?B("pfmake","Try again"):"")};
+    return {t:`<span class="spin"></span>Building the 3D files…`,s:"Usually 1 to 3 minutes. You can close this."};
+  }
+  if(f.status==="error")return {t:`<span class="bad">Couldn't make the files.</span>`,s:f.error||"",b:L(f.runUrl,"See log")+(ok?B("pfmake","Try again",true):"")};
+  if(f.status==="ready"){
+    const n=(f.files||[]).filter(x=>/\.3mf$/i.test(x)).length,cached=pfBlob.has(o.id+"|"+(f.builtAt||""));
+    const info=`${n} print file${n===1?"":"s"}, ${mb(f.size||0)}, made ${ago(now-(Date.parse(f.builtAt||"")||now))}`;
+    const warn=(f.warnings||[]).length?` · ${esc((f.warnings||[]).join(" "))}`:"";
+    if(!fresh)return {t:`<span class="bad">The order changed after these were made.</span>`,s:info,b:(ok?B("pfmake","Rebuild",true):"")+B("pfdl","Old files")};
+    return {t:"Ready to print.",s:info+warn,b:B("pfdl",cached?"Save print files":"Download print files",true)+(ok?B("pfmake","Rebuild"):"")};
+  }
+  return {t:"Not made yet.",b:ok?B("pfmake","Make print files",true):""};
+}
+function renderPf(o){
+  const box=$("pfBox");if(!box)return;
+  if(!backend||!backend.watchFiles){box.hidden=true;return}
+  const v=pfView(o),h=`<div class="pfi"><b>3D print files</b><span>${v.t}</span>${v.s?`<small>${v.s}</small>`:""}</div>${v.b?`<div class="pfb">${v.b}</div>`:""}`;
+  box.hidden=false;if(pfHtml.get("cur")!==h){box.innerHTML=h;pfHtml.set("cur",h)}
+}
+if(window.__mockBackend)window.__t={oid:()=>openId,ik:id=>itemsKey(orders.find(x=>x.id===id)),no:id=>pad(orders.find(x=>x.id===id).no),check:id=>pfCheckRun(orders.find(x=>x.id===id))};
+setInterval(()=>{if(!openId)return;const o=orders.find(x=>x.id===openId),f=o&&files[o.id];if(f&&/^(queued|building)$/.test(f.status||"")){pfCheckRun(o);renderPf(o)}},30000);
+
+/* uploaded files: your own zip / 3MF / STL per order, stored in Firestore (uploads) */
+let ups={},stopUps=null,upArm=null;
+const upProg=new Map(),upDl=new Set(),upBlob=new Map(),UP_CH=900000,UP_MAX=25e6,UP_OK=/\.(zip|3mf|stl)$/i;
+const upName=n=>String(n||"file").replace(/[\\/:*?"<>|\u0000-\u001f]+/g," ").replace(/\s+/g," ").trim().slice(0,120)||"file";
+const upType=n=>/\.zip$/i.test(n)?"application/zip":"application/octet-stream";
+const upOf=oid=>Object.entries(ups).filter(([,u])=>u&&u.orderId===oid).map(([id,u])=>({...u,id})).sort((a,b)=>String(a.uploadedAt||"").localeCompare(String(b.uploadedAt||""))||a.id.localeCompare(b.id));
+function upErr(e){const c=String(e&&e.code||"");return /permission-denied/.test(c)?"Firestore blocked the upload. Update the Firestore rules with the uploads version.":/resource-exhausted/.test(c)?"The free Firebase limit was reached. Remove some old files, or try tomorrow.":"The upload didn't finish. Try again."}
+function renderUp(o){
+  const box=$("upBox");if(!box)return;
+  if(!backend||!backend.watchUploads){box.hidden=true;return}
+  const now=Date.now(),L=upOf(o.id);
+  const rows=L.map(u=>{
+    const p=upProg.get(u.id),who=String(u.uploadedBy||"").split("@")[0],age=now-(Date.parse(u.uploadedAt||"")||now);
+    const ready=u.status==="ready",dl=upDl.has(u.id),armed=upArm&&upArm.id===u.id;
+    let sub=[mb(u.size||0),who,ago(age)].filter(Boolean).join(" · "),bar="";
+    if(p!==undefined){sub=`Uploading ${Math.round(p*100)}%`;bar=`<span class="upbar"><i style="width:${Math.round(p*100)}%"></i></span>`}
+    else if(!ready)sub=age>15*6e4?`<span class="bad">This upload didn't finish. Remove it and upload again.</span>`:"Uploading on another device…";
+    else if(dl)sub=`<span class="spin"></span>Getting the file…`;
+    const rm=canWrite&&p===undefined?`<button class="btn${armed?" armed":""}" type="button" data-act="uprm" data-u="${esc(u.id)}" aria-label="Remove ${esc(u.name)}">${armed?"Tap again":"Remove"}</button>`:"";
+    return `<li class="uprow"><button class="upname" type="button" data-act="updl" data-u="${esc(u.id)}"${ready&&!dl?"":" disabled"} aria-label="Download ${esc(u.name)}"><b>${esc(u.name)}</b><small>${sub}</small>${bar}</button>${rm}</li>`;
+  }).join("");
+  const add=canWrite?`<label class="btn red" for="upFile" tabindex="0" role="button">Upload files</label>`:"";
+  const h=`<div class="uphead"><div class="pfi"><b>Uploaded files</b><small>Zip, 3MF or STL, up to 25 MB each. Tap a file to download it.</small></div>${add}</div>${rows?`<ul class="uplist">${rows}</ul>`:`<p class="upempty">No files yet.</p>`}`;
+  box.hidden=false;if(pfHtml.get("up")!==h){box.innerHTML=h;pfHtml.set("up",h)}
+}
+function rerenderUp(){if(openId){const o=orders.find(x=>x.id===openId);if(o)renderUp(o)}upUsage()}
+async function upFiles(o,list){
+  if(!backend||!backend.putUpload)return;
+  if(!navigator.onLine){toast("You're offline. Connect to upload files.");return}
+  const bad=list.filter(f=>!UP_OK.test(f.name)),big=list.filter(f=>UP_OK.test(f.name)&&f.size>UP_MAX),ok=list.filter(f=>UP_OK.test(f.name)&&f.size>0&&f.size<=UP_MAX);
+  if(bad.length)toast(`${bad.length===1?bad[0].name+" isn't":bad.length+" files aren't"} a zip, 3MF or STL.`);
+  else if(big.length)toast(`${big[0].name} is ${mb(big[0].size)}. The limit is 25 MB per file.`);
+  let done=0,fail=null;
+  for(const f of ok){
+    const id=backend.newId(),name=upName(f.name),n=Math.max(1,Math.ceil(f.size/UP_CH));
+    upProg.set(id,0);rerenderUp();
+    try{
+      const buf=new Uint8Array(await f.arrayBuffer());
+      await backend.putUpload(id,{orderId:o.id,name,size:buf.length,chunks:n,status:"uploading",uploadedBy:me?me.email:"",uploadedAt:new Date().toISOString()});
+      for(let i=0;i<n;i++){await backend.putUploadChunk(id,i,buf.subarray(i*UP_CH,(i+1)*UP_CH));upProg.set(id,(i+1)/n);rerenderUp()}
+      await backend.putUpload(id,{status:"ready"});done++;
+    }catch(e){fail=e;backend.removeUpload(id).catch(()=>{})}
+    finally{upProg.delete(id);rerenderUp()}
+  }
+  if(fail)toast(upErr(fail));
+  else if(done&&!bad.length&&!big.length)toast(done===1?`Uploaded ${upName(ok[0].name)}.`:`Uploaded ${done} files.`);
+}
+async function upDownload(uid){
+  const u=ups[uid];if(!u||u.status!=="ready"||upDl.has(uid))return;
+  const name=upName(u.name),hit=upBlob.get(uid);
+  if(hit){shareOrDownload(hit,name);return}
+  upDl.add(uid);rerenderUp();
+  try{
+    const parts=await backend.getUploadChunks(uid);
+    if(!parts.length)throw new Error(navigator.onLine?"incomplete":"offline");
+    const blob=new Blob(parts,{type:upType(name)});
+    if((u.chunks&&parts.length!==u.chunks)||(u.size&&blob.size!==u.size))throw new Error("incomplete");
+    upBlob.clear();upBlob.set(uid,blob);
+    if(matchMedia("(pointer: coarse)").matches)toast("File ready.",()=>shareOrDownload(blob,name),"Save or share");
+    else download(blob,name);
+  }catch(e){toast(e.message==="offline"?"You're offline. Connect to download the file.":e.message==="incomplete"?"That file is incomplete. Remove it and upload it again.":"Couldn't download the file. Try again.")}
+  finally{upDl.delete(uid);rerenderUp()}
+}
+function upRemove(uid){
+  const u=ups[uid];if(!u||!backend)return;
+  if(!upArm||upArm.id!==uid){clearTimeout(upArm&&upArm.t);upArm={id:uid,t:setTimeout(()=>{upArm=null;rerenderUp()},3500)};rerenderUp();return}
+  clearTimeout(upArm.t);upArm=null;
+  delete ups[uid];upBlob.delete(uid);rerenderUp();
+  backend.removeUpload(uid).then(()=>toast(`Removed ${upName(u.name)}.`)).catch(e=>toast(writeErr(e)));
+}
+function upUsage(){
+  const el=$("upUse");if(!el)return;
+  const all=Object.values(ups),tot=all.reduce((a,u)=>a+(u.size||0),0);
+  const shipped=new Set(orders.filter(o=>o.shipped).map(o=>o.id)),old=all.filter(u=>shipped.has(u.orderId));
+  el.textContent=all.length?`${all.length} file${all.length===1?"":"s"}, ${mb(tot)} of the 1 GB free Firebase storage.${old.length?` ${old.length} belong${old.length===1?"s":""} to shipped orders.`:""}`:"No uploaded files yet.";
+  $("upClear").hidden=!old.length||!canWrite;
+}
+$("upFile").addEventListener("change",e=>{const o=orders.find(x=>x.id===openId),fl=[...e.target.files];e.target.value="";if(o&&fl.length&&canWrite)upFiles(o,fl)});
+$("upBox").addEventListener("keydown",e=>{if(e.target.matches("label[for=upFile]")&&(e.key==="Enter"||e.key===" ")){e.preventDefault();$("upFile").click()}});
+$("upClear").onclick=e=>{
+  const b=e.currentTarget;
+  if(!b.classList.contains("armed")){b.classList.add("armed");b.textContent="Tap again to remove them";setTimeout(()=>{b.classList.remove("armed");b.textContent="Remove files from shipped orders"},3500);return}
+  b.classList.remove("armed");b.textContent="Remove files from shipped orders";
+  const shipped=new Set(orders.filter(o=>o.shipped).map(o=>o.id)),ids=Object.keys(ups).filter(id=>shipped.has(ups[id].orderId));
+  ids.forEach(id=>{delete ups[id];backend.removeUpload(id).catch(()=>{})});rerenderUp();
+  toast(`Removed ${ids.length} file${ids.length===1?"":"s"} from shipped orders.`);
+};
+
+/* builder settings */
+const parseRepo=v=>{const m=/(?:github\.com\/)?([A-Za-z0-9_.-]+)\/([A-Za-z0-9_.-]+?)(?:\.git)?\/?$/.exec(String(v||"").trim());return m?`${m[1]}/${m[2]}`:""};
+function bShow(lines){$("bMsg").innerHTML=lines.length?`<ul class="blist">${lines.map(l=>`<li>${l}</li>`).join("")}</ul>`:""}
+async function checkBuilder(b){
+  const out=[],yes=t=>out.push("✓ "+t),no=t=>out.push("✗ "+t);
+  let r=await gh(b,`/repos/${b.repo}`);
+  if(r.status===401){no("GitHub didn't accept the token. Make a new one and paste it here.");return out}
+  if(!r.ok){no(`Can't open ${esc(b.repo)} with this token. Check the name and that the token can use this repository.`);return out}
+  const repo=await r.json(),br=repo.default_branch||"main";
+  if(repo.private)yes("Private repository found.");else no("This repository is public. Make it private in GitHub settings, it holds your master model files.");
+  r=await gh(b,`/repos/${b.repo}/contents/builder.zip`);
+  if(r.ok)yes("builder.zip is there.");else no("builder.zip is missing. Upload it to the repository.");
+  r=await gh(b,`/repos/${b.repo}/contents/.github/workflows/build.yml?ref=${encodeURIComponent(br)}`);
+  let sha=null,same=false;
+  if(r.ok){const j=await r.json();sha=j.sha;try{same=atob(String(j.content||"").replace(/\s/g,""))===WF}catch(e){}}
+  if(same)yes("Build workflow is installed.");
+  else{
+    const w=await gh(b,`/repos/${b.repo}/contents/.github/workflows/build.yml`,{method:"PUT",body:JSON.stringify({message:sha?"Update print-file workflow":"Add print-file workflow",content:btoa(WF),branch:br,...(sha?{sha}:{})})});
+    if(w.ok)yes(sha?"Build workflow updated.":"Build workflow installed.");
+    else no(`Couldn't add the build workflow (GitHub ${w.status}). Give the token <b>Workflows: Read and write</b> access, then tap Save and check again. Or <a href="https://github.com/${esc(b.repo)}/new/${esc(br)}?filename=.github/workflows/build.yml" target="_blank" rel="noopener">create the file on GitHub</a> and paste the text from <button type="button" class="linkbtn" id="wfCopy">Copy workflow</button>.`);
+  }
+  r=await gh(b,`/repos/${b.repo}/actions/runs?per_page=1`);
+  if(r.ok)yes("The app can see build progress.");else out.push("• Optional: give the token <b>Actions: Read-only</b> so the app can spot failed builds.");
+  return out;
+}
+$("bSave").onclick=async e=>{
+  if(!backend||!backend.saveSettings)return;
+  const repo=parseRepo($("bRepo").value),token=$("bToken").value.trim(),btn=e.currentTarget;
+  if(!repo){bShow(["✗ Enter the repository as owner/name, for example alex/dumpling-builder."]);return}
+  if(!token){bShow(["✗ Paste the GitHub token."]);return}
+  $("bRepo").value=repo;btn.disabled=true;bShow(["Checking…"]);
+  try{
+    await Promise.race([backend.saveSettings({repo,token,updatedBy:me?me.email:"",updatedAt:new Date().toISOString()}),new Promise(r=>setTimeout(r,8000))]);
+    builder={...(builder||{}),repo,token};
+    bShow(["✓ Saved for everyone on the board.",...(await checkBuilder({repo,token}))]);
+  }catch(err){bShow(["✗ "+(fsErr(err)||"Couldn't check GitHub. Check your connection and try again.")])}
+  finally{btn.disabled=false}
+};
+$("bMsg").addEventListener("click",async e=>{if(e.target.id!=="wfCopy")return;try{await navigator.clipboard.writeText(WF);e.target.textContent="Copied"}catch(err){toast("Couldn't copy. Long-press to select instead.")}});
+$("bAll").onclick=async e=>{
+  if(!hasBuilder()){bShow(["✗ Save the repository and token first."]);return}
+  if(!navigator.onLine){bShow(["✗ You're offline."]);return}
+  const btn=e.currentTarget,b=builder;btn.disabled=true;
+  const need=lists().open.filter(o=>itemsOf(o).length&&(!files[o.id]||(files[o.id].status==="ready"&&files[o.id].itemsKey!==itemsKey(o))||files[o.id].status==="error"));
+  try{
+    const r=await gh(b,`/repos/${b.repo}/dispatches`,{method:"POST",body:JSON.stringify({event_type:"build-order",client_payload:{orderId:"all",label:"All open orders",apiKey:backend.cfg.apiKey,projectId:backend.cfg.projectId}})});
+    if(r.status!==204&&r.status!==200)throw new Error(ghErr(r.status));
+    const q=new Date().toISOString();need.forEach(o=>backend.setFiles(o.id,{status:"queued",itemsKey:itemsKey(o),queuedAt:q,error:""}).catch(()=>{}));
+    bShow([`✓ Started. ${need.length?`${need.length} order${need.length===1?"":"s"} need${need.length===1?"s":""} files.`:"Every open order already has files."}`]);
+  }catch(err){bShow(["✗ "+(err&&/^GitHub/.test(err.message)?err.message:"Couldn't reach GitHub. Try again.")])}
+  finally{btn.disabled=false}
+};
+
 document.addEventListener("click",async e=>{
   const t=e.target.closest("button");if(!t)return;
   if(t.dataset.f){filter=t.dataset.f;cur=null;target=0;render();return}
@@ -691,11 +979,18 @@ document.addEventListener("click",async e=>{
   if(a==="pdf"){savePdf(`Work order ${pad(o.no)} - ${o.buyer||"order"}.pdf`,A=>worksheetPages(o,A),t);return}
   if(a==="tix"){savePdf(`Ticket inserts ${pad(o.no)} - ${o.buyer||"order"}.pdf`,A=>ticketPages(o,A),t);return}
   if(a==="edit"){openEditor(o);return}
+  if(a==="pfmake"){triggerBuild(o,true);return}
+  if(a==="pfdl"){pfDownload(o);return}
+  if(a==="updl"){upDownload(t.dataset.u);return}
+  if(a==="uprm"){if(canWrite)upRemove(t.dataset.u);return}
+  if(a==="pfset"){openSettings();setTimeout(()=>$("bRepo").focus(),50);return}
   if(a==="del"){
     if(!t.classList.contains("armed")){t.classList.add("armed");t.textContent="Tap again to delete";setTimeout(()=>{if(t.isConnected){t.classList.remove("armed");t.textContent="Delete"}},3500);return}
     t.classList.remove("armed");t.textContent="Delete";
     if(!backend)return;
-    backend.remove(id).catch(err=>toast(writeErr(err)));orders=orders.filter(x=>x.id!==id);closeOpen();render();toast(`Deleted order #${pad(o.no)}.`);
+    backend.remove(id).catch(err=>toast(writeErr(err)));if(backend.removeFiles&&files[id])backend.removeFiles(id).catch(()=>{});
+    const mine=upOf(id);if(backend.removeUpload)mine.forEach(u=>{delete ups[u.id];backend.removeUpload(u.id).catch(()=>{})});
+    orders=orders.filter(x=>x.id!==id);closeOpen();render();toast(`Deleted order #${pad(o.no)}${mine.length?` and its ${mine.length} uploaded file${mine.length===1?"":"s"}`:""}.`);
   }
 });
 
@@ -749,9 +1044,10 @@ $("form").addEventListener("submit",async e=>{
   $("fErr").hidden=true;
   const off=navigator.onLine?"":" It will sync when you're back online.";
   if(editing){
-    const id=editing;
+    const id=editing,prev=orders.find(x=>x.id===id),before=prev?itemsKey(prev):"";
     backend.update(id,d).catch(err=>toast(writeErr(err)));
     patchLocal(id,x=>Object.assign(x,d));
+    const now=orders.find(x=>x.id===id);if(now&&itemsKey(now)!==before&&(files[id]||hasBuilder()))triggerBuild(now,false);
     toast("Changes saved."+off);closeEditor();
   }else{
     const no=Math.max(0,...orders.map(o=>parseInt(o.no)||0))+1;
@@ -759,6 +1055,7 @@ $("form").addEventListener("submit",async e=>{
     const doc={...d,no,status:{},shipped:false,shippedAt:"",createdAt:new Date().toISOString()};
     backend.create(id,doc).catch(err=>toast(writeErr(err)));
     if(!orders.some(o=>o.id===id))orders.push({...doc,id});
+    triggerBuild({...doc,id},false);
     if(filter==="shipped")filter="open";
     cur=id;render();
     toast(`Added order #${pad(no)}.`+off);
@@ -1031,6 +1328,7 @@ addEventListener("online",updateSync);addEventListener("offline",updateSync);
 /* settings */
 function openSettings(){
   $("whoami").textContent=me?`Signed in as ${me.email}`:"";
+  $("bRepo").value=builder&&builder.repo||"";$("bToken").value=builder&&builder.token||"";bShow([]);upUsage();
   $("kKey").value=LS.get(KEY_LS)||"";$("kModel").value=LS.get(MODEL_LS)||DEFAULT_MODEL;$("kMsg").textContent="";$("impMsg").textContent="";
   $("setOv").hidden=false;document.body.classList.add("lock");$("setClose").focus();
 }
@@ -1072,8 +1370,22 @@ async function firebaseBackend(cfg){
   const [appM,authM,fs]=await Promise.all([import(B+"firebase-app.js"),import(B+"firebase-auth.js"),import(B+"firebase-firestore.js")]);
   const app=appM.initializeApp(cfg),auth=authM.getAuth(app);
   let fdb;try{fdb=fs.initializeFirestore(app,{localCache:fs.persistentLocalCache({tabManager:fs.persistentMultipleTabManager()})})}catch(e){fdb=fs.getFirestore(app)}
-  const coll=fs.collection(fdb,"orders"),ref=id=>fs.doc(coll,id);
+  const coll=fs.collection(fdb,"orders"),ref=id=>fs.doc(coll,id),fcoll=fs.collection(fdb,"orderFiles"),setRef=fs.doc(fdb,"settings","builder");
+  const chunks=id=>fs.collection(fdb,"orderFiles",id,"chunks"),ucoll=fs.collection(fdb,"uploads"),uchunks=id=>fs.collection(fdb,"uploads",id,"chunks");
+  const readChunks=async c=>{const q=fs.query(c,fs.orderBy("i"));let s;try{s=navigator.onLine?await fs.getDocsFromServer(q):await fs.getDocs(q)}catch(e){s=await fs.getDocs(q)}return s.docs.map(d=>{const v=d.data().data;return v&&v.toUint8Array?v.toUint8Array():new Uint8Array(0)})};
   return {
+    cfg:{apiKey:cfg.apiKey,projectId:cfg.projectId},
+    watchFiles:(next,err)=>fs.onSnapshot(fcoll,s=>{const m={};s.docs.forEach(d=>{m[d.id]=d.data()});next(m)},err||(()=>{})),
+    setFiles:(id,data)=>fs.setDoc(fs.doc(fcoll,id),data,{merge:true}),
+    getChunks:id=>readChunks(chunks(id)),
+    removeFiles:async id=>{const s=await fs.getDocs(chunks(id));await Promise.all(s.docs.map(d=>fs.deleteDoc(d.ref)));await fs.deleteDoc(fs.doc(fcoll,id))},
+    watchUploads:(next,err)=>fs.onSnapshot(ucoll,s=>{const m={};s.docs.forEach(d=>{m[d.id]=d.data()});next(m)},err||(()=>{})),
+    putUpload:(id,data)=>fs.setDoc(fs.doc(ucoll,id),data,{merge:true}),
+    putUploadChunk:(id,i,bytes)=>fs.setDoc(fs.doc(uchunks(id),String(i).padStart(3,"0")),{i,data:fs.Bytes.fromUint8Array(bytes)}),
+    getUploadChunks:id=>readChunks(uchunks(id)),
+    removeUpload:async id=>{const s=await fs.getDocs(uchunks(id));await Promise.all(s.docs.map(d=>fs.deleteDoc(d.ref)));await fs.deleteDoc(fs.doc(ucoll,id))},
+    watchSettings:(next,err)=>fs.onSnapshot(setRef,d=>next(d.exists()?d.data():null),err||(()=>{})),
+    saveSettings:data=>fs.setDoc(setRef,data,{merge:true}),
     onAuth:cb=>authM.onAuthStateChanged(auth,u=>cb(u?{email:u.email||"",uid:u.uid}:null)),
     signIn:(e,p)=>authM.signInWithEmailAndPassword(auth,e,p),
     signOut:()=>authM.signOut(auth),
@@ -1113,6 +1425,12 @@ async function boot(){
   }catch(e){gate("fail");return}
   backend.onAuth(u=>{
     me=u;if(stopWatch){stopWatch();stopWatch=null}
+    if(stopFiles){stopFiles();stopFiles=null}if(stopSet){stopSet();stopSet=null}if(stopUps){stopUps();stopUps=null}
+    if(u&&backend.watchUploads)stopUps=backend.watchUploads(m=>{ups=m;rerenderUp()});else ups={};
+    if(u&&backend.watchFiles){
+      stopFiles=backend.watchFiles(m=>{files=m;if(openId){const o=orders.find(x=>x.id===openId);if(o)renderPf(o)}});
+      stopSet=backend.watchSettings(d=>{builder=d&&d.repo?{repo:String(d.repo),token:String(d.token||"")}:null;if(openId){const o=orders.find(x=>x.id===openId);if(o)renderPf(o)}});
+    }else{files={};builder=null}
     if(!u){orders=[];loaded=false;closeOpen();render();updateSync();gate("signin");setTimeout(()=>$("sEmail").focus(),60);return}
     gate(null);setMsg("");loaded=false;render();
     stopWatch=backend.watch((list,m)=>{orders=list;meta=m;loaded=true;render();updateSync()},err=>{
